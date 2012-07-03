@@ -1,0 +1,84 @@
+<%# coding: utf-8 %>
+<!DOCTYPE html>
+<html>
+<head>
+<title>Yahoo! オークション ライブ別の落札状況</title>
+<meta charset="UTF-8">
+<meta name="description" content="" />
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+<!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<script type="text/javascript" src="/js/prettify.js"></script>                                   <!-- PRETTIFY -->
+<script type="text/javascript" src="/js/kickstart.js"></script>                                  <!-- KICKSTART -->
+<link rel="stylesheet" type="text/css" href="/css/kickstart.css" media="all" />                  <!-- KICKSTART -->
+<link rel="stylesheet" type="text/css" href="/style.css" media="all" />                          <!-- CUSTOM STYLES -->
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+</head>
+<body>
+<div id="wrap" class="clearfix">
+<!-- ===================================== END HEADER ===================================== -->
+
+<ul class="menu">
+<li class="current"><a href="/">ライブ別の落札状況</a></li>
+<li><a href="/reseller">落札金額上位アカウント</a></li>
+<li><a href="/stats">アカウント数の比率</a></li>
+<li><a href="/about">このサイトについて</a></li>
+</ul>
+
+<div class="col_12 center">
+<h6>ももいろクローバーＺ ライブチケット</h6>
+<h4><span class="icon gray large" data-icon="L"></span>Yahoo! オークション ライブ別の落札状況<span class="icon gray large" data-icon="L"></span></h4>
+<strong>掲載されたデータは参考値です。詳しくは<a href="/about">このサイトについて</a>をご参照ください。</strong>
+</div>
+
+<div class="col_12">
+<p>Yahoo! オークションから検索キーワード毎に抽出した商品の落札件数/金額を集計したデータです。</p>
+<table class="striped tight" cellspacing="0" cellpadding="0">
+  <thead>
+    <tr>
+      <th nowrap>公演タイトル</th>
+      <th nowrap>公演日</th>
+      <th nowrap colspan="2">定価</th>
+      <th nowrap>検索キーワード</th>
+      <th nowrap>詳細</th>
+      <th nowrap>合計落札件数</th>
+      <th nowrap>合計落札金額</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% events.each do |e| %>
+    <% loop = 0 %>
+    <% e[:list_price].each do |lp| %>
+      <tr>
+        <% if loop == 0 %>
+          <td rowspan="<%= e[:list_price].length %>"><%= e[:name] %></td>
+          <td nowrap rowspan="<%= e[:list_price].length %>"><%= e[:date] %></td>
+        <% end %>
+        <td nowrap><%= lp["type"] %></td>
+        <td nowrap><%= lp["price"] %> 円</td>
+        <% if loop == 0 %>
+          <td nowrap rowspan="<%= e[:list_price].length %>">
+            <% e[:keyword].each do |kw| %>
+              <%= kw %><br>
+            <% end %>
+          </td>
+          <td rowspan="<%= e[:list_price].length %>"><a href="./detail?id=<%= e[:id] %>"><span class="icon black large" data-icon="<"></span></a></td>
+          <td class="right" nowrap rowspan="<%= e[:list_price].length %>"><%= e[:count] %> 件</td>
+          <td class="right" nowrap rowspan="<%= e[:list_price].length %>"><%= e[:sales] %> 円</td>
+        <% end %>
+        <% loop += 1 %>
+      </tr>
+    <% end %>
+  <% end %>
+    <tr>
+      <th class="right" colspan="6">合計</th>
+      <th class="right" nowrap><%= total_count %> 件</th>
+      <th class="right" nowrap><%= total_sales %> 円</th>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<!-- ===================================== START FOOTER ===================================== -->
+</div><!-- END WRAP -->
+</body>
+</html>

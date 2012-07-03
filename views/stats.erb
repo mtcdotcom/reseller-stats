@@ -1,0 +1,183 @@
+<%# coding: utf-8 %>
+<!DOCTYPE html>
+<html>
+<head>
+<title>Yahoo! オークション アカウント数の比率</title>
+<meta charset="UTF-8">
+<meta name="description" content="" />
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+<!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<script type="text/javascript" src="/js/prettify.js"></script>                                   <!-- PRETTIFY -->
+<script type="text/javascript" src="/js/kickstart.js"></script>                                  <!-- KICKSTART -->
+<link rel="stylesheet" type="text/css" href="/css/kickstart.css" media="all" />                  <!-- KICKSTART -->
+<link rel="stylesheet" type="text/css" href="/style.css" media="all" />                          <!-- CUSTOM STYLES -->
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript">
+(function($){
+var count_chart;
+var sales_chart;
+$(document).ready(function() {
+  count_chart = new Highcharts.Chart({
+    chart: {
+      renderTo: 'count_chart',
+      plotBackgroundColor: null,
+      plotBorderWidth: null,
+      plotShadow: false
+    },
+    title: {
+      text: '合計落札件数別アカウント数の比率'
+    },
+    tooltip: {
+      formatter: function() {
+        return '<b>'+ this.point.name +'</b>: '+ this.percentage +' %';
+      }
+    },
+    plotOptions: {
+      pie: {
+        allowPointSelect: true,
+        cursor: 'pointer',
+        dataLabels: {
+          enabled: true,
+          color: '#000000',
+          connectorColor: '#000000',
+          formatter: function() {
+            return '<b>'+ this.point.name +'</b>';
+          }
+        }
+      }
+    },
+    series: [{
+      type: 'pie',
+      name: '合計落札件数別アカウント数の比率',
+      data: [
+<% loop = 1 %>      
+<% seller_stats[:stats].each do |ss| %>
+        ['<%= ss[:key] %>', <%= ss[:count] %>]<% if loop != seller_stats[:stats].length %>,<% end %><% loop += 1 %>
+<% end %>
+      ]
+    }]
+  });
+  sales_chart = new Highcharts.Chart({
+    chart: {
+      renderTo: 'sales_chart',
+      plotBackgroundColor: null,
+      plotBorderWidth: null,
+      plotShadow: false
+    },
+    title: {
+      text: '合計落札金額別アカウント数の比率'
+    },
+    tooltip: {
+      formatter: function() {
+        return '<b>'+ this.point.name +'</b>: '+ this.percentage +' %';
+      }
+    },
+    plotOptions: {
+      pie: {
+        allowPointSelect: true,
+        cursor: 'pointer',
+        dataLabels: {
+          enabled: true,
+          color: '#000000',
+          connectorColor: '#000000',
+          formatter: function() {
+            return '<b>'+ this.point.name +'</b>';
+          }
+        }
+      }
+    },
+    series: [{
+      type: 'pie',
+      name: '合計落札金額別アカウント数の比率',
+      data: [
+<% loop = 1 %>
+<% sales_stats[:stats].each do |ss| %>
+        ['<%= ss[:key] %>', <%= ss[:count] %>]<% if loop != sales_stats[:stats].length %>,<% end %><% loop += 1 %>
+<% end %>
+      ]
+    }]
+  });
+});
+})(jQuery);
+</script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+</head>
+<body>
+<div id="wrap" class="clearfix">
+<!-- ===================================== END HEADER ===================================== -->
+
+<ul class="menu">
+<li><a href="/">ライブ別の落札状況</a></li>
+<li><a href="/reseller">落札金額上位アカウント</a></li>
+<li class="current"><a href="/stats">アカウント数の比率</a></li>
+<li><a href="/about">このサイトについて</a></li>
+</ul>
+
+<div class="col_12 center">
+<h6>ももいろクローバーＺ ライブチケット</h6>
+<h4><span class="icon gray large" data-icon="L"></span>Yahoo! オークション アカウント数の比率<span class="icon gray large" data-icon="L"></span></h4>
+<strong>掲載されたデータは参考値です。詳しくは<a href="/about">このサイトについて</a>をご参照ください。</strong>
+</div>
+
+<div class="col_12 center">
+<div class="col_8">
+<div id="count_chart" style="margin: 0 auto"></div>
+</div>
+<div class="col_4">
+<table class="striped" cellspacing="0" cellpadding="0">
+  <thead>
+    <tr>
+      <th>合計落札件数</th>
+      <th>出品者アカウント数</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% seller_stats[:stats].each do |ss| %>
+    <tr>
+      <td class="right"><%= ss[:key] %></td>
+      <td class="right"><%= ss[:count] %></td>
+    </tr>
+  <% end %>
+    <tr>
+      <th class="right">合計</th>
+      <th class="right"><%= seller_stats[:total] %></th>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+<div class="col_12 center">
+<div class="col_8">
+<div id="sales_chart" style="margin: 0 auto"></div>
+</div>
+<div class="col_4">
+<table class="striped" cellspacing="0" cellpadding="0">
+  <thead>
+    <tr>
+      <th nowrap>合計落札金額</th>
+      <th nowrap>出品者アカウント数</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% sales_stats[:stats].each do |ss| %>
+    <tr>
+      <td nowrap class="right"><%= ss[:key] %></td>
+      <td nowrap class="right"><%= ss[:count] %></td>
+    </tr>
+  <% end %>
+    <tr>
+      <th class="right">合計</th>
+      <th class="right"><%= seller_stats[:total] %></th>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+<!-- ===================================== START FOOTER ===================================== -->
+</div><!-- END WRAP -->
+</body>
+</html>

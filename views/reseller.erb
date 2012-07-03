@@ -1,0 +1,170 @@
+<%# coding: utf-8 %>
+<!DOCTYPE html>
+<html>
+<head>
+<title>Yahoo! オークション 落札金額上位アカウント</title>
+<meta charset="UTF-8">
+<meta name="description" content="" />
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+<!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<script type="text/javascript" src="/js/prettify.js"></script>                                   <!-- PRETTIFY -->
+<script type="text/javascript" src="/js/kickstart.js"></script>                                  <!-- KICKSTART -->
+<link rel="stylesheet" type="text/css" href="/css/kickstart.css" media="all" />                  <!-- KICKSTART -->
+<link rel="stylesheet" type="text/css" href="/style.css" media="all" />                          <!-- CUSTOM STYLES -->
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+(function($){
+var count_chart;
+var sales_chart;
+$(document).ready(function() {
+  count_chart = new Highcharts.Chart({
+    chart: {
+      renderTo: 'count_chart',
+      plotBackgroundColor: null,
+      plotBorderWidth: null,
+      plotShadow: false
+    },
+    title: {
+      text: '落札件数の割合'
+    },
+    tooltip: {
+      formatter: function() {
+        return '<b>'+ this.point.name +'</b>: '+ this.percentage +' %';
+      }
+    },
+    plotOptions: {
+      pie: {
+        allowPointSelect: true,
+        cursor: 'pointer',
+        dataLabels: {
+          enabled: true,
+          color: '#000000',
+          connectorColor: '#000000',
+          formatter: function() {
+            return '<b>'+ this.point.name +'</b>';
+          }
+        }
+      }
+    },
+    series: [{
+      type: 'pie',
+      name: '落札件数の割合',
+      data: [
+        {
+          name: '上位50',
+          y: <%= reseller_count %>,
+          sliced: true,
+          selected: true
+        },
+        ['その他', <%= other_count %> ]
+      ]
+    }]
+  });
+  sales_chart = new Highcharts.Chart({
+    chart: {
+      renderTo: 'sales_chart',
+      plotBackgroundColor: null,
+      plotBorderWidth: null,
+      plotShadow: false
+    },
+    title: {
+      text: '落札金額の割合'
+    },
+    tooltip: {
+      formatter: function() {
+        return '<b>'+ this.point.name +'</b>: '+ this.percentage +' %';
+      }
+    },
+    plotOptions: {
+      pie: {
+        allowPointSelect: true,
+        cursor: 'pointer',
+        dataLabels: {
+          enabled: true,
+          color: '#000000',
+          connectorColor: '#000000',
+          formatter: function() {
+            return '<b>'+ this.point.name +'</b>';
+          }
+        }
+      }
+    },
+    series: [{
+      type: 'pie',
+      name: '落札金額の割合',
+      data: [
+        {
+          name: '上位50',
+          y: <%= reseller_sales %>,
+          sliced: true,
+          selected: true
+        },
+        ['その他', <%= other_sales %> ]
+      ]
+    }]
+  });
+});
+})(jQuery);
+</script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+</head>
+<body>
+<div id="wrap" class="clearfix">
+<!-- ===================================== END HEADER ===================================== -->
+
+<ul class="menu">
+<li><a href="/">ライブ別の落札状況</a></li>
+<li class="current"><a href="/reseller">落札金額上位アカウント</a></li>
+<li><a href="/stats">アカウント数の比率</a></li>
+<li><a href="/about">このサイトについて</a></li>
+</ul>
+
+<div class="col_12 center">
+<h6>ももいろクローバーＺ ライブチケット</h6>
+<h4><span class="icon gray large" data-icon="L"></span>Yahoo! オークション 落札金額上位アカウント<span class="icon gray large" data-icon="L"></span></h4>
+<h4>(合計落札金額 上位50アカウント)</h4>
+<strong>掲載されたデータは参考値です。詳しくは<a href="/about">このサイトについて</a>をご参照ください。</strong>
+</div>
+
+<div class="col_12 center">
+<h5>上位50アカウント分の落札件数/金額が全体の中で占める割合</h5>
+<div class="col_6">
+<div id="count_chart" style="margin: 0 auto"></div>
+</div>
+<div class="col_6">
+<div id="sales_chart" style="margin: 0 auto"></div>
+</div>
+<div class="col_12 center">
+<h5>合計落札金額 上位50アカウント分の落札/落札金額のリスト</h5>
+<table class="striped" cellspacing="0" cellpadding="0">
+  <thead>
+    <tr>
+      <th>出品者アカウント</th>
+      <th>合計落札件数</th>
+      <th>合計落札金額</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% reseller.each do |r| %>
+    <tr>
+      <td class="right"><%= r[:id] %></td>
+      <td class="right"><%= r[:count] %> 件</td>
+      <td class="right"><%= r[:sales] %> 円</td>
+    </tr>
+  <% end %>
+    <tr>
+      <th>合計</th>
+      <th><%= reseller_count_fmt %> / <%= total_count %> 件</th>
+      <th><%= reseller_sales_fmt %> / <%= total_sales %> 円</th>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+<!-- ===================================== START FOOTER ===================================== -->
+</div><!-- END WRAP -->
+</body>
+</html>

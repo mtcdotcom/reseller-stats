@@ -1,0 +1,61 @@
+<%# coding: utf-8 %>
+<!DOCTYPE html>
+<html>
+<head>
+<title>Yahoo! オークション ライブ別の落札リスト</title>
+<meta charset="UTF-8">
+<meta name="description" content="" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<script type="text/javascript" src="/js/prettify.js"></script>                                   <!-- PRETTIFY -->
+<script type="text/javascript" src="/js/kickstart.js"></script>                                  <!-- KICKSTART -->
+<link rel="stylesheet" type="text/css" href="/css/kickstart.css" media="all" />                  <!-- KICKSTART -->
+<link rel="stylesheet" type="text/css" href="/style.css" media="all" />                          <!-- CUSTOM STYLES -->
+</head>
+<body>
+<div id="wrap" class="clearfix">
+<!-- ===================================== END HEADER ===================================== -->
+
+<ul class="menu">
+<li class="current"><a href="/">ライブ別の落札状況</a></li>
+<li><a href="/reseller">落札金額上位アカウント</a></li>
+<li><a href="/stats">アカウント数の比率</a></li>
+<li><a href="/about">このサイトについて</a></li>
+</ul>
+
+<div class="col_12 center">
+<h6>ももいろクローバーＺ ライブチケット</h6>
+<h4><span class="icon gray large" data-icon="L"></span>Yahoo! オークション ライブ別の落札リスト<span class="icon gray large" data-icon="L"></span></h4>
+<h5><%= name %></h5>
+<strong>掲載されたデータは参考値です。詳しくは<a href="/about">このサイトについて</a>をご参照ください。</strong>
+</div>
+
+<div class="col_12">
+<table class="striped tight" cellspacing="0" cellpadding="0">
+<thead><tr>
+	<th nowrap>タイトル</th>
+	<th nowrap>出品者アカウント</th>
+	<th nowrap>入札数</th>
+	<th nowrap>数量</th>
+	<th nowrap>落札金額</th>
+	<th nowrap>終了日時</th>
+</tr></thead>
+<tbody>
+<% auctions.each do |a| %>
+  <tr>
+    <td><%= a[:title] %></td>
+    <td class="right"><%= a[:seller_id] %></td>
+    <td class="right"><%= a[:bids] %></td>
+    <td class="right"><%= a[:quantity] %></td>
+    <td class="right"><%= a[:price] %> 円</td>
+    <td><%= a[:end_time_ut] %></td>
+  </tr>
+<% end %>
+</tbody>
+</table>
+</div>
+
+<!-- ===================================== START FOOTER ===================================== -->
+</div><!-- END WRAP -->
+</body>
+</html>
