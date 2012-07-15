@@ -55,7 +55,7 @@ class Setup
   end
 end
 
-# Setup.new.execute
+Setup.new.execute
 AuctionStats.new.execute
 ResellerLists.new.execute
 SellerStats.new.execute
