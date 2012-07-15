@@ -54,11 +54,7 @@ $(function() {
             },
             tooltip: {
                 formatter: function() {
-                    var s = '<b>'+ Highcharts.dateFormat('%Y-%m-%d', this.x) +'</b>';
-                    $.each(this.points, function(i, point) {
-                        s += '<br/>' + this.series.name + '：' + point.y;
-                    });
-                    return s;
+                    return '<b>'+ Highcharts.dateFormat('%Y-%m-%d', this.x) + '<br />' + this.y + '件</b>';
                 }
             },
             yAxis: [
@@ -111,7 +107,7 @@ $(function() {
 </div>
 
 <div class="col_12">
-<div id="container" style="height: 500px; min-width: 500px"></div>
+<div id="container" style="height: 400px; min-width: 500px"></div>
 </div>
 
 <div class="col_12">

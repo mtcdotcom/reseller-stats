@@ -21,7 +21,8 @@ class Setup
       event.save
     }
     Events.all.each {|event|
-      event.auctions.where(complete: false).each {|auction|
+#      event.auctions.where(complete: false).each {|auction|
+      event.auctions.all.each {|auction|
         begin
           parse = ParseAuction.new(auction.url).parse
           auction.seller_id   = parse[:seller_id]
@@ -30,6 +31,7 @@ class Setup
           auction.bids        = parse[:bids]
           auction.quantity    = parse[:quantity]
           auction.end_time_ut = parse[:end_time_ut]
+          auction.is_ticket   = parse[:is_ticket]
           # 取り消しオークション対応(終了時刻+αでオークション終了とみなす)
           if Time.now.to_i >= (parse[:end_time_ut].to_i + (0.1 * 86400))
              auction.complete = true

@@ -36,6 +36,7 @@ class Auction
   field :quantity, :type => Integer
   field :end_time_ut, :type => Integer
   field :complete, :type => Boolean
+  field :is_ticket, :type => Boolean
 
   embedded_in :events
 end

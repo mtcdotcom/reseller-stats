@@ -130,6 +130,7 @@ class App < Sinatra::Base
       auctions << {
         :title       => auction.title,
         :url         => auction.url,
+        :is_ticket   => auction.is_ticket,
         :price       => _currency_fmt(auction.price),
         :bids        => auction.bids,
         :quantity    => auction.quantity,
