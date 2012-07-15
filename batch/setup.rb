@@ -21,8 +21,7 @@ class Setup
       event.save
     }
     Events.all.each {|event|
-#      event.auctions.where(complete: false).each {|auction|
-      event.auctions.all.each {|auction|
+      event.auctions.where(complete: false).each {|auction|
         begin
           parse = ParseAuction.new(auction.url).parse
           auction.seller_id   = parse[:seller_id]
