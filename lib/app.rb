@@ -8,7 +8,22 @@ class App < Sinatra::Base
   set :static, true
   set :public, 'public'
 
+  # def protected!
+  #   unless authorized?
+  #     response['WWW-Authenticate'] = %(Basic realm="Restricted Area")
+  #     throw(:halt, [401, "Not authorized\n"])
+  #   end
+  # end
+
+  # def authorized?
+  #   @auth ||=  Rack::Auth::Basic::Request.new(request.env)
+  #   username = ENV['BASIC_AUTH_USERNAME']
+  #   password = ENV['BASIC_AUTH_PASSWORD']
+  #   @auth.provided? && @auth.basic? && @auth.credentials && @auth.credentials == [username, password]
+  # end
+
   get '/' do
+    # protected!
     total  = _total
     events = _events(_auction_stats())
     erb :index, :locals => {
@@ -74,10 +89,10 @@ class App < Sinatra::Base
   end
 
   get '/detail' do
-    event      = nil
-    name       = ""
-    auctions   = []
-    transition = []
+    event       = nil
+    name        = ""
+    daily_stats = []
+    auctions    = []
     begin
       event = Events.find(params[:id])
     rescue => e
@@ -85,10 +100,23 @@ class App < Sinatra::Base
       puts $@
     end
     if event
-      name     = event.name
-      auctions = _detail_list(event)
+      name        = event.name
+      daily_stats = _daily_stats(name)
+      auctions    = _detail_list(event)
     end
-    erb :detail, :locals => {:name => name, :auctions => auctions}
+    erb :detail, :locals => {:name => name, :daily_stats => daily_stats, :auctions => auctions}
+  end
+
+  def _daily_stats(name)
+    daily_stats = []
+    DailyStats.where("_id.name" => name).order_by(["_id.ut", :asc]).each {|t|
+      daily_stats << {
+        :ut    => t._id["ut"].to_i,
+        :count => t.value["count"].to_i,
+        :total => t.value["total"].to_i
+      }
+    }
+    daily_stats
   end
 
   def _detail_list(event)
@@ -96,15 +124,16 @@ class App < Sinatra::Base
     event.auctions.where(
                          :complete => true,
                          :bids.gt  => 0).order_by(
-                                                  [[:seller_id,   :asc],
-                                                   [:end_time_ut, :desc],
-                                                   [:bids,        :asc]]).each {|auction|
+                                                  [[:price,       :desc],
+                                                   [:bids,        :asc],
+                                                   [:end_time_ut, :asc]]).each {|auction|
       auctions << {
         :title       => auction.title,
+        :url         => auction.url,
         :price       => _currency_fmt(auction.price),
         :bids        => auction.bids,
         :quantity    => auction.quantity,
-        :seller_id   => _mask_id(auction.seller_id),
+        :seller_id   => auction.seller_id,
         :end_time_ut => _datetime_fmt(auction.end_time_ut.to_i)
       }
     }
@@ -139,7 +168,7 @@ class App < Sinatra::Base
       total_count += count
       total_sales += sales
       reseller << {
-        :id    => _mask_id(rl._id.to_s),
+        :id    => rl._id.to_s,
         :count => count,
         :sales => _currency_fmt(sales),
       }

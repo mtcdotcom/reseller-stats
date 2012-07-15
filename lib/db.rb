@@ -188,3 +188,52 @@ class SalesStats
     ResellerLists.collection.map_reduce(map, reduce, :out => "sales_stats")
   end
 end
+
+class DailyStats
+  include Mongoid::Document
+  field :name
+  field :date
+  field :ut, :type => Integer
+  field :value, :type => Hash
+
+  def execute
+    map = %Q{
+      function() {
+        for (var i = 0; i < this.auctions.length; i ++) {
+          if (!this.auctions[i].bids || !this.auctions[i].complete) {
+            continue;
+          }
+          var date   = new Date();
+          var offset = 0;
+          offset += date.getTimezoneOffset() * 60000; // MongoLab実行環境の時差
+          offset += 3600000 * 9;                      // 東京の時差
+          date.setTime(this.auctions[i].end_time_ut * 1000 + offset);
+          var y  = date.getFullYear();
+          var m  = date.getMonth();
+          var d  = date.getDate();
+          var ut = new Date(y, m, d);
+          var key = {
+            name : this.name,
+            date : y + "-" + ("0" + (m + 1)).slice(-2) + "-" + ("0" + d).slice(-2),
+            ut   : ut.getTime() - offset
+          };
+          var p = this.auctions[i].price;
+          var q = this.auctions[i].quantity;
+          emit(key, {count: q, total: p});
+        }
+      }
+    }
+    reduce = %Q{
+      function(key, values) {
+        var count = 0;
+        var total = 0;
+        values.forEach(function(value) {
+          count += value.count;
+          total += value.total;
+        });
+        return {count: count, total: total};
+      }
+    }
+    Events.collection.map_reduce(map, reduce, :out => "daily_stats")
+  end
+end

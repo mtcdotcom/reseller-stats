@@ -11,6 +11,86 @@
 <script type="text/javascript" src="/js/kickstart.js"></script>                                  <!-- KICKSTART -->
 <link rel="stylesheet" type="text/css" href="/css/kickstart.css" media="all" />                  <!-- KICKSTART -->
 <link rel="stylesheet" type="text/css" href="/style.css" media="all" />                          <!-- CUSTOM STYLES -->
+
+<script type="text/javascript">
+var chart;
+$(function() {
+    Highcharts.setOptions({
+        global: {
+            useUTC: false
+        }
+    });
+    chart = new Highcharts.StockChart({
+          chart: {
+                 renderTo  : 'container',
+                 alignTicks: false
+          },
+          rangeSelector: {
+                         selected: 2,
+                         buttons : [
+                         {
+                            type  : 'week',
+                            count : 1,
+                            text  : 'w'
+                         },{
+                            type  : 'month',
+                            count : 2,
+                            text  : 'm'
+                         },{
+                            type  : 'all',
+                            count : 3,
+                            text  : 'All'
+                         }],
+                         inputEnabled: false
+            },
+            scrollbar: {
+                enabled: false
+            },
+            navigator : {
+                enabled : false
+            },
+            title: {
+                text: '合計落札件数の推移'
+            },
+            tooltip: {
+                formatter: function() {
+                    var s = '<b>'+ Highcharts.dateFormat('%Y-%m-%d', this.x) +'</b>';
+                    $.each(this.points, function(i, point) {
+                        s += '<br/>' + this.series.name + '：' + point.y;
+                    });
+                    return s;
+                }
+            },
+            yAxis: [
+            {
+                title: {
+                    text: '合計落札件数'
+                },
+                offset   : 0,
+                lineWidth: 2
+                }
+            ],
+            series:
+            [
+            {
+                type: 'column',
+                name: '合計落札件数',
+                data: 
+[
+<% loop = 1 %>
+<% daily_stats.each do |ds| %>
+[<%= ds[:ut] %>, <%= ds[:count] %>]<% if loop != daily_stats.length %>,<% end %><% loop += 1 %>
+<% end %>
+]
+            }
+            ]
+    });
+});
+</script>
+
+<script src="/js/highstock/highstock.js"></script>
+<script src="/js/highstock/modules/exporting.js"></script>
+
 </head>
 <body>
 <div id="wrap" class="clearfix">
@@ -31,6 +111,10 @@
 </div>
 
 <div class="col_12">
+<div id="container" style="height: 500px; min-width: 500px"></div>
+</div>
+
+<div class="col_12">
 <table class="striped tight" cellspacing="0" cellpadding="0">
 <thead><tr>
 	<th nowrap>タイトル</th>
@@ -43,12 +127,12 @@
 <tbody>
 <% auctions.each do |a| %>
   <tr>
-    <td><%= a[:title] %></td>
-    <td class="right"><%= a[:seller_id] %></td>
-    <td class="right"><%= a[:bids] %></td>
-    <td class="right"><%= a[:quantity] %></td>
-    <td class="right"><%= a[:price] %> 円</td>
-    <td><%= a[:end_time_ut] %></td>
+    <td><a href="<%= a[:url] %>" target="_blank"><%= a[:title] %></a></td>
+    <td nowrap><%= a[:seller_id] %></td>
+    <td nowrap class="right"><%= a[:bids] %></td>
+    <td nowrap class="right"><%= a[:quantity] %></td>
+    <td nowrap class="right"><%= a[:price] %> 円</td>
+    <td nowrap><%= a[:end_time_ut] %></td>
   </tr>
 <% end %>
 </tbody>
