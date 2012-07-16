@@ -92,6 +92,7 @@ class App < Sinatra::Base
     event       = nil
     name        = ""
     daily_stats = []
+    price_stats = []
     auctions    = []
     begin
       event = Events.find(params[:id])
@@ -102,21 +103,45 @@ class App < Sinatra::Base
     if event
       name        = event.name
       daily_stats = _daily_stats(name)
+      price_stats = _price_stats(name)
       auctions    = _detail_list(event)
     end
-    erb :detail, :locals => {:name => name, :daily_stats => daily_stats, :auctions => auctions}
+    erb :detail, :locals => {
+                             :name        => name,
+                             :daily_stats => daily_stats,
+                             :price_stats => price_stats,
+                             :auctions    => auctions
+                            }
   end
 
   def _daily_stats(name)
-    daily_stats = []
+    stats = []
     DailyStats.where("_id.name" => name).order_by(["_id.ut", :asc]).each {|t|
-      daily_stats << {
+      stats << {
         :ut    => t._id["ut"].to_i,
         :count => t.value["count"].to_i,
         :total => t.value["total"].to_i
       }
     }
-    daily_stats
+    stats
+  end
+
+  def _price_stats(name)
+    stats = []
+    total = 0
+    PriceStats.where("_id.name" => name).order_by(["_id.sort", :asc]).each {|ps|
+      count = ps.value["count"].to_i
+      key   = ps._id["range"].to_s + " 円"
+      stats << {
+        :key   => key,
+        :count => count
+      }
+      total += count
+    }
+    {
+      :stats => stats,
+      :total => total
+    }
   end
 
   def _detail_list(event)

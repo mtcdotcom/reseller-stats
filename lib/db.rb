@@ -238,3 +238,66 @@ class DailyStats
     Events.collection.map_reduce(map, reduce, :out => "daily_stats")
   end
 end
+
+class PriceStats
+  include Mongoid::Document
+  field :name
+  field :value, :type => Hash
+
+  def execute
+    map = %Q{
+      function() {
+        for (var i = 0; i < this.auctions.length; i ++) {
+          if (!this.auctions[i].bids || !this.auctions[i].complete) {
+            continue;
+          }
+          var p = this.auctions[i].price;
+          var q = this.auctions[i].quantity;
+          if (p >= 0 && p <= 9999) {
+            emit({sort:  1, name: this.name, range : "0〜9,999"}, {count: q});
+          }
+          else if (p >= 10000 && p <= 19999) {
+            emit({sort:  2, name: this.name, range : "10,000〜19,999"}, {count: q});
+          }
+          else if (p >= 20000 && p <= 29999) {
+            emit({sort:  3, name: this.name, range : "20,000〜29,999"}, {count: q});
+          }
+          else if (p >= 30000 && p <= 39999) {
+            emit({sort:  4, name: this.name, range : "30,000〜39,999"}, {count: q});
+          }
+          else if (p >= 40000 && p <= 49999) {
+            emit({sort:  5, name: this.name, range : "40,000〜49,999"}, {count: q});
+          }
+          else if (p >= 50000 && p <= 59999) {
+            emit({sort:  6, name: this.name, range : "50,000〜59,999"}, {count: q});
+          }
+          else if (p >= 60000 && p <= 69999) {
+            emit({sort:  7, name: this.name, range : "60,000〜69,999"}, {count: q});
+          }
+          else if (p >= 70000 && p <= 79999) {
+            emit({sort:  8, name: this.name, range : "70,000〜79,999"}, {count: q});
+          }
+          else if (p >= 80000 && p <= 89999) {
+            emit({sort:  9, name: this.name, range : "80,000〜89,999"}, {count: q});
+          }
+          else if (p >= 90000 && p <= 99999) {
+            emit({sort: 10, name: this.name, range : "90,000〜99,999"}, {count: q});
+          }
+          else if (p >= 100000) {
+            emit({sort: 11, name: this.name, range : "100,000〜"}, {count: q});
+          }
+        }
+      }
+    }
+    reduce = %Q{
+      function(key, values) {
+        var count = 0;
+        values.forEach(function(value) {
+          count += value.count;
+        });
+        return {count: count};
+      }
+    }
+    Events.collection.map_reduce(map, reduce, :out => "price_stats")
+  end
+end

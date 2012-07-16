@@ -62,3 +62,4 @@ ResellerLists.new.execute
 SellerStats.new.execute
 SalesStats.new.execute
 DailyStats.new.execute
+PriceStats.new.execute

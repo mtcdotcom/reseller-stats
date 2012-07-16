@@ -13,7 +13,8 @@
 <link rel="stylesheet" type="text/css" href="/style.css" media="all" />                          <!-- CUSTOM STYLES -->
 
 <script type="text/javascript">
-var chart;
+var stock_chart;
+var pie_chart;
 $(function() {
     Highcharts.setOptions({
         global: {
@@ -22,7 +23,7 @@ $(function() {
     });
     chart = new Highcharts.StockChart({
           chart: {
-                 renderTo  : 'container',
+                 renderTo  : 'stock_chart',
                  alignTicks: false
           },
           rangeSelector: {
@@ -81,6 +82,46 @@ $(function() {
             }
             ]
     });
+    pie_chart = new Highcharts.Chart({
+        chart: {
+            renderTo: 'pie_chart',
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false
+        },
+        title: {
+            text: '落札金額の分布'
+        },
+        tooltip: {
+            formatter: function() {
+                return '<b>'+ this.point.name +'</b>: '+ this.percentage +' %';
+            }
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    color: '#000000',
+                    connectorColor: '#000000',
+                    formatter: function() {
+                        return '<b>'+ this.point.name +'</b>';
+                    }
+                }
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: '落札金額の分布',
+            data: [
+<% loop = 1 %>
+<% price_stats[:stats].each do |ps| %>
+    ['<%= ps[:key] %>', <%= ps[:count] %>]<% if loop != price_stats[:stats].length %>,<% end %><% loop += 1 %>
+<% end %>
+            ]
+        }]
+    });
 });
 </script>
 
@@ -107,7 +148,35 @@ $(function() {
 </div>
 
 <div class="col_12">
-<div id="container" style="height: 400px; min-width: 500px"></div>
+<div id="stock_chart" style="height: 400px; min-width: 500px"></div>
+</div>
+
+<div class="col_12 center">
+<div class="col_8">
+<div id="pie_chart" style="margin: 0 auto"></div>
+</div>
+<div class="col_4">
+<table class="striped" cellspacing="0" cellpadding="0">
+  <thead>
+    <tr>
+      <th>落札金額</th>
+      <th>落札件数</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% price_stats[:stats].each do |ps| %>
+    <tr>
+      <td class="right"><%= ps[:key] %></td>
+      <td class="right"><%= ps[:count] %></td>
+    </tr>
+  <% end %>
+    <tr>
+      <th class="right">合計</th>
+      <th class="right"><%= price_stats[:total] %></th>
+    </tr>
+  </tbody>
+</table>
+</div>
 </div>
 
 <div class="col_12">
