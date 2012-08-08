@@ -1,4 +1,4 @@
 reseller-stats
 =============
 
-reseller-stats
+ヤフオクで転売されているチケットの落札状況を可視化します。
