@@ -20,7 +20,7 @@ class Setup
       }
       event.save
     }
-    Events.all.each {|event|
+    Events.where(:date.gte => today).order_by(:date.asc).each {|event|
       event.auctions.where(complete: false).each {|auction|
         begin
           parse = ParseAuction.new(auction.url).parse
