@@ -8,18 +8,28 @@ require File.dirname(__FILE__) + "/parse_auction"
 class Setup
   def execute
     today = DateTime.now.strftime("%Y-%m-%d")
+    _collect_auction(today)
+    _parse_auction(today)
+  end
+
+  def _collect_auction(today)
     Events.where(:date.gte => today).order_by(:date.asc).each {|event|
-      SearchAuction.new(event.keyword.join(' ')).search.each {|link|
-        auction = event.auctions.where({url: link}).first
-        unless auction
-          event.auctions << Auction.new(
-                                        :url      => link,
-                                        :complete => false
-                                        )
-        end
+      event.keyword.each {|keyword|
+        SearchAuction.new(keyword.join(' ')).search.each {|link|
+          auction = event.auctions.where({url: link}).first
+          unless auction
+            event.auctions << Auction.new(
+                                          :url      => link,
+                                          :complete => false
+                                          )
+          end
+        }
+        event.save
       }
-      event.save
     }
+  end
+
+  def _parse_auction(today)
     Events.where(:date.gte => today).order_by(:date.asc).each {|event|
       event.auctions.where(complete: false).each {|auction|
         begin

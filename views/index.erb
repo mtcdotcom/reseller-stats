@@ -58,7 +58,9 @@
         <% if loop == 0 %>
           <td nowrap rowspan="<%= e[:list_price].length %>">
             <% e[:keyword].each do |kw| %>
-              <%= kw %><br>
+              <% kw.each do |k| %>
+                <%= k %><br />
+              <% end %>
             <% end %>
           </td>
           <td rowspan="<%= e[:list_price].length %>"><a href="./detail?id=<%= e[:id] %>"><span class="icon black large" data-icon="<"></span></a></td>
