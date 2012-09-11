@@ -89,6 +89,7 @@ class App < Sinatra::Base
   end
 
   get '/detail' do
+    protected!
     event       = nil
     name        = ""
     daily_stats = []
@@ -167,16 +168,17 @@ class App < Sinatra::Base
   end
 
   get '/reseller' do
+    protected!
     total       = _total
     reseller    = _reseller()
     other_count = total[:count] - reseller[:total_count]
     other_sales = total[:sales] - reseller[:total_sales]
     erb :reseller, :locals => {
-                               :total_count => _currency_fmt(total[:count].to_i),
-                               :total_sales => _currency_fmt(total[:sales].to_i),
-                               :other_count => other_count,
-                               :other_sales => other_sales,
-                               :reseller    => reseller[:reseller],
+                               :total_count        => _currency_fmt(total[:count].to_i),
+                               :total_sales        => _currency_fmt(total[:sales].to_i),
+                               :other_count        => other_count,
+                               :other_sales        => other_sales,
+                               :reseller           => reseller[:reseller],
                                :reseller_count     => reseller[:total_count],
                                :reseller_sales     => reseller[:total_sales],
                                :reseller_count_fmt => _currency_fmt(reseller[:total_count]),
@@ -207,6 +209,7 @@ class App < Sinatra::Base
   end
 
   get '/stats' do
+    protected!
     erb :stats, :locals => {
                             :seller_stats => _seller_stats,
                             :sales_stats  => _sales_stats
@@ -262,6 +265,7 @@ class App < Sinatra::Base
   end
 
   get '/about' do
+    protected!
     erb :about, :locals => {}
   end
 end
