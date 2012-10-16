@@ -14,3 +14,4 @@ db.events.insert({name: "ももクロ女祭り2012", date: ISODate('2012-10-05T0
 db.events.insert({name: "ももクロ男祭り2012", date: ISODate('2012-11-05T00:00:00'), list_price: [{type: "前売り", price: 6000}, {type: "当日", price: 6500}], keyword: [['ももいろクローバー', '男祭り']], auctions: []})
 db.events.insert({name: "ももいろクリスマス2012 12/24", date: ISODate('2012-12-24T00:00:00'), list_price: [{type: "前売り", price: 7500}, {type: "当日", price: 8000}], keyword: [['ももいろクローバー', 'ももクリ', '1日目'], ['ももいろクローバー', 'ももクリ', '24']], auctions: []})
 db.events.insert({name: "ももいろクリスマス2012 12/25", date: ISODate('2012-12-25T00:00:00'), list_price: [{type: "前売り", price: 7500}, {type: "当日", price: 8000}], keyword: [['ももいろクローバー', 'ももクリ', '2日目'], ['ももいろクローバー', 'ももクリ', '25']], auctions: []})
+db.events.insert({name: "独占！ももクノ60分 vol.3", date: ISODate('2012-11-11T00:00:00'), list_price: [{type: "指定席", price: 3000}], keyword: [['ももいろクローバー', 'ももクノ']], auctions: []})
