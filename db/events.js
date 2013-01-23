@@ -19,3 +19,4 @@ db.events.insert({name: "ももいろ夜ばなし第一夜『白秋』", date: I
 db.events.insert({name: "独占！ももクノ60分 vol.5", date: ISODate('2013-01-19T00:00:00'), list_price: [{type: "前売り", price: 3000}, {type: "当日", price: 3000}], keyword: [['ももクノ', '金沢'], ['ももクノ', 'vol.5']], auctions: []})
 db.events.insert({name: "ももクロくらぶxoxo〜バレンタインDE NIGHTだぁ〜Z！", date: ISODate('2013-02-11T00:00:00'), list_price: [{type: "前売り", price: 5900}, {type: "当日", price: 5900}], keyword: [['ももいろクローバー', 'ももクロくらぶ'], ['ももいろクローバー', 'バレンタイン'], ['ももいろクローバー', 'xoxo']], auctions: []})
 db.events.insert({name: "ももクロ試練の七番勝負 episode.3(1/28〜2/3)", date: ISODate('2013-01-28T00:00:00'), list_price: [{type: "前売り", price: 4000}, {type: "当日", price: 4000}], keyword: [['ももいろクローバー', '試練の七番勝負']], auctions: []})
+db.events.insert({name: "独占！ももクノ60分 vol.6", date: ISODate('2013-02-16T00:00:00'), list_price: [{type: "前売り", price: 3000}, {type: "当日", price: 3000}], keyword: [['ももクノ', '沖縄'], ['ももクノ', 'vol.6']], auctions: []})
