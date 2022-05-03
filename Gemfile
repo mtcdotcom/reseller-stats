@@ -1,5 +1,5 @@
 source :rubyforge
-gem 'sinatra', '1.1.0'
+gem 'sinatra', '2.2.0'
 gem 'thin', '1.2.7'
 gem 'bson', '1.6.2'
 gem 'bson_ext', '1.6.2'
